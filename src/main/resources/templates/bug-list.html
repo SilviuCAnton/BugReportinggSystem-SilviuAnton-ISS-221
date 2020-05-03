@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Bug List</title>
+</head>
+<body>
+<div class="container">
+
+    <br>
+    <h3>Bug Tracker</h3>
+    <hr>
+
+    <br>
+    <div>
+        Logged User: <span sec:authentication="name"></span>
+        <br>
+        Role(s): <span sec:authentication="principal.authorities"></span>
+        <br><br>
+    </div>
+
+    <hr>
+
+    <a th:href="@{showFormForReporting}"
+       class = "btn btn-primary btn-sm mb-3">
+        Report Bug</a>
+
+    <table class="table table-bordered table-striped table-nonfluid">
+        <thead class="thead-dark">
+        <tr>
+            <th>Bug Name</th>
+            <th>Bug Description</th>
+            <th>Bug Status</th>
+            <th>Time Reported</th>
+<!--            <th>Action</th>-->
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="bug : ${bugs}">
+            <td th:text="${bug.name}"></td>
+            <td th:text="${bug.description}"></td>
+            <td th:text="${bug.status}"></td>
+            <td th:text="${bug.timeReported}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <form action="#" th:action="@{/logout}"
+          method="POST">
+
+        <input type="submit" value="Logout" class="btn btn-outline-primary mt-2"/>
+        <hr>
+    </form>
+
+</div>
+</body>
+</html>
