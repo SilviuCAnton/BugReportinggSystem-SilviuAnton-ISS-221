@@ -20,4 +20,8 @@ public interface BugService {
     List<Bug> getAllBugs(QATester currentTester);
 
     void deleteBug(Bug bug);
+
+    void markBugAsSolved(int bugId);
+
+    void trackBug(int bugId);
 }

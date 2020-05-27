@@ -8,7 +8,55 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script>
+        var stompClient = null;
 
+        function setConnected(connected) {
+            $("#connect").prop("disabled", connected);
+            $("#disconnect").prop("disabled", !connected);
+        }
+
+        function connect() {
+            var socket = new SockJS('/update-websocket');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/observer', function (message) {
+                    console.log(message)
+                    updateData();
+                });
+            });
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+            setConnected(false);
+            console.log("Disconnected");
+        }
+
+        function sendUpdate() {
+            stompClient.send("/bugreportingsystem/bugs/update", {}, JSON.stringify({'name': 'UPDATE'}));
+        }
+
+        function updateData() {
+            location.reload();
+        }
+
+        $(function () {
+            $( ".trackButton" ).click(function() { sendUpdate(); disconnect(); });
+            $( ".solveButton" ).click(function() { sendUpdate(); disconnect()  });
+            $( "#logoutButton" ).click(function() { disconnect(); });
+            $( "#reportBugButton" ).click(function() { disconnect(); });
+        });
+
+        connect();
+    </script>
     <title>Bug List</title>
 </head>
 <body>
@@ -28,7 +76,7 @@
 
     <hr>
 
-    <a th:href="@{showFormForReporting}"
+    <a id="reportBugButton" th:href="@{showFormForReporting}"
        sec:authorize="hasRole('QATESTER')"
        class = "btn btn-primary btn-sm mb-3">
         Report Bug</a>
@@ -53,15 +101,18 @@
             <td th:text="${bug.timeReported}"></td>
             <td sec:authorize="hasRole('DEVELOPER')" th:text="${bug.reporter.firstName} + ' ' + ${bug.reporter.lastName}"></td>
             <td th:switch="${bug.status}" sec:authorize="hasRole('DEVELOPER')">
-                <a th:href="@{trackBug}"
+
+                <a
+                   th:href="@{trackBug(bugId=${bug.id})}"
                    th:case="${bug.status.NOT_TRACKED}"
                    sec:authorize="hasRole('DEVELOPER')"
-                   class = "btn btn-info btn-sm mb-3">
+                   class = "btn btn-info btn-sm mb-3 trackButton">
                     Track Bug</a>
-                <a th:href="@{markBugAsSolved}"
+                <a
+                   th:href="@{markBugAsSolved(bugId=${bug.id})}"
                    th:case="${bug.status.TRACKED}"
                    sec:authorize="hasRole('DEVELOPER')"
-                   class = "btn btn-success btn-sm mb-3">
+                   class = "btn btn-success btn-sm mb-3 solveButton">
                     Mark as Solved</a>
             </td>
         </tr>
@@ -73,7 +124,7 @@
     <form action="#" th:action="@{/logout}"
           method="POST">
 
-        <input type="submit" value="Logout" class="btn btn-outline-primary mt-2"/>
+        <input id="logoutButton" type="submit" value="Logout" class="btn btn-outline-primary mt-2"/>
         <hr>
     </form>
 

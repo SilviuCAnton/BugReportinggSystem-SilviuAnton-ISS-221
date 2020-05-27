@@ -59,4 +59,28 @@ public class BugServiceImpl implements BugService {
     public void deleteBug(Bug bug) {
         bugRepository.delete(bug);
     }
+
+
+
+    @Override
+    public void markBugAsSolved(int bugId) {
+        Optional<Bug> theBug = bugRepository.findById(bugId);
+
+        if(theBug.isPresent()){
+            Bug bugToUpdate = theBug.get();
+            bugToUpdate.setStatus(BugStatus.SOLVED);
+            bugRepository.save(bugToUpdate);
+        }
+    }
+
+    @Override
+    public void trackBug(int bugId) {
+        Optional<Bug> theBug = bugRepository.findById(bugId);
+
+        if(theBug.isPresent()){
+            Bug bugToUpdate = theBug.get();
+            bugToUpdate.setStatus(BugStatus.TRACKED);
+            bugRepository.save(bugToUpdate);
+        }
+    }
 }

@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
@@ -9,6 +8,46 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>Report Bug</title>
+
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script>
+        var stompClient = null;
+
+        function setConnected(connected) {
+            $("#connect").prop("disabled", connected);
+            $("#disconnect").prop("disabled", !connected);
+        }
+
+        function connect() {
+            var socket = new SockJS('/update-websocket');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+            });
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+            setConnected(false);
+            console.log("Disconnected");
+        }
+
+        function sendUpdate() {
+            stompClient.send("/bugreportingsystem/bugs/update", {}, JSON.stringify({'name': 'UPDATE'}));
+        }
+
+        $(function () {
+            $( "#reportButton" ).click(function() { sendUpdate(); disconnect(); });
+            $( "#backLink" ).click(function() { disconnect(); });
+        });
+
+        connect();
+    </script>
 </head>
 <body>
 <div class="container">
@@ -21,32 +60,23 @@
           th:object="${bug}" method="POST">
 
         <!-- Add hidden form field to handle update -->
-        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{id}"/>
 
         <input type="text" th:field="*{name}"
-               class="from-control mb-4 col-4" placeholder="Bug Name">
+               class="from-control mb-4 col-4" placeholder="Bug Name"/>
 
         <br>
 
         <textarea cols="86" rows ="10" th:field="*{description}"
                class="from-control mb-4 col-4" placeholder="Last name"></textarea>
 
-<!--        <br>-->
-<!--        <select class="form-control mb-4 col-4" th:field="*{status}">-->
-<!--            <option value="0">Select status</option>-->
-<!--            <option th:each="status : ${T(com.silviucanton.bugreportingsystem.domain.BugStatus).values()}"-->
-<!--                    th:value="${status}"-->
-<!--                    th:text="${status}">-->
-<!--            </option>-->
-<!--        </select>-->
-
         <br>
 
-        <button type="submit" class="btn btn-info col-2">Report</button>
+        <button id="reportButton" type="submit" class="btn btn-info col-2">Report</button>
     </form>
 
     <hr>
-    <a th:href="@{/bugreporting/bugs/list}">Back to Bug List</a>
+    <a id="backLink" th:href="@{/bugreporting/bugs/list}">Back to Bug List</a>
 </div>
 </body>
 </html>
