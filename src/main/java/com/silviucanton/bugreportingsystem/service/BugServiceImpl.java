@@ -2,6 +2,7 @@ package com.silviucanton.bugreportingsystem.service;
 
 import com.silviucanton.bugreportingsystem.domain.Bug;
 import com.silviucanton.bugreportingsystem.domain.BugStatus;
+import com.silviucanton.bugreportingsystem.domain.QATester;
 import com.silviucanton.bugreportingsystem.repository.BugRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,8 +51,8 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public List<Bug> getAllBugs() {
-        return bugRepository.findAllByOrderByStatus();
+    public List<Bug> getAllBugs(QATester currentTester) {
+        return bugRepository.findAllByReporterOrderByStatus(currentTester);
     }
 
     @Override

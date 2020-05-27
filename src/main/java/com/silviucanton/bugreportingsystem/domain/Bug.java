@@ -25,6 +25,10 @@ public class Bug {
     @Column(name = "time_reported")
     private LocalDateTime timeReported;
 
+    @ManyToOne
+    @JoinColumn(name = "tester")
+    private QATester reporter;
+
     public Bug(int id, String name, String description, LocalDateTime timeReported) {
         this.id = id;
         this.name = name;
@@ -78,6 +82,14 @@ public class Bug {
 
     public void setStatus(BugStatus status) {
         this.status = status;
+    }
+
+    public QATester getReporter() {
+        return reporter;
+    }
+
+    public void setReporter(QATester reporter) {
+        this.reporter = reporter;
     }
 
     @Override

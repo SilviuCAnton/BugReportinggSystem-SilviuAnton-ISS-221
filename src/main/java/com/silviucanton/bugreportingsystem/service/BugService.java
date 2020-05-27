@@ -2,21 +2,22 @@ package com.silviucanton.bugreportingsystem.service;
 
 import com.silviucanton.bugreportingsystem.domain.Bug;
 import com.silviucanton.bugreportingsystem.domain.BugStatus;
+import com.silviucanton.bugreportingsystem.domain.QATester;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface BugService {
 
-    public void saveBug(Bug bug);
+    void saveBug(Bug bug);
 
-    public void updateBug(Bug theBug);
+    void updateBug(Bug theBug);
 
-    public Bug findBugById(int id);
+    Bug findBugById(int id);
 
-    public List<Bug> getUnsolvedBugs();
+    List<Bug> getUnsolvedBugs();
 
-    public List<Bug> getAllBugs();
+    List<Bug> getAllBugs(QATester currentTester);
 
-    public void deleteBug(Bug bug);
+    void deleteBug(Bug bug);
 }

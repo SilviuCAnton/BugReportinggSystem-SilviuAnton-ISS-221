@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -28,6 +29,7 @@
     <hr>
 
     <a th:href="@{showFormForReporting}"
+       sec:authorize="hasRole('QATESTER')"
        class = "btn btn-primary btn-sm mb-3">
         Report Bug</a>
 
@@ -38,7 +40,8 @@
             <th>Bug Description</th>
             <th>Bug Status</th>
             <th>Time Reported</th>
-<!--            <th>Action</th>-->
+            <th sec:authorize="hasRole('DEVELOPER')">Posted By</th>
+            <th sec:authorize="hasRole('DEVELOPER')">Action</th>
         </tr>
         </thead>
 
@@ -48,6 +51,19 @@
             <td th:text="${bug.description}"></td>
             <td th:text="${bug.status}"></td>
             <td th:text="${bug.timeReported}"></td>
+            <td sec:authorize="hasRole('DEVELOPER')" th:text="${bug.reporter.firstName} + ' ' + ${bug.reporter.lastName}"></td>
+            <td th:switch="${bug.status}" sec:authorize="hasRole('DEVELOPER')">
+                <a th:href="@{trackBug}"
+                   th:case="${bug.status.NOT_TRACKED}"
+                   sec:authorize="hasRole('DEVELOPER')"
+                   class = "btn btn-info btn-sm mb-3">
+                    Track Bug</a>
+                <a th:href="@{markBugAsSolved}"
+                   th:case="${bug.status.TRACKED}"
+                   sec:authorize="hasRole('DEVELOPER')"
+                   class = "btn btn-success btn-sm mb-3">
+                    Mark as Solved</a>
+            </td>
         </tr>
         </tbody>
     </table>
