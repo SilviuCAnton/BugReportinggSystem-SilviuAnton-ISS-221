@@ -1,9 +1,6 @@
 package com.silviucanton.bugreportingsystem.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -15,9 +12,12 @@ public class Authority implements Serializable {
     @Column(name = "username")
     private String username;
 
-    @Id
     @Column(name = "authority")
     private String authority;
+
+    @OneToOne
+    @JoinColumn(name = "username")
+    private User user;
 
     @Override
     public boolean equals(Object o) {

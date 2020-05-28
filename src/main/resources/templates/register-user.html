@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <meta charset="UTF-8">
+    <title>Register User</title>
+</head>
+<body>
+<div class="container">
+    <h3>Bug Tracker</h3>
+    <hr>
+
+    <p class="h4 mb-4">Register User</p>
+
+    <form action="#" th:action="@{registerUser}" method="POST">
+
+        <!-- Add hidden form field to handle update -->
+        <input type="hidden" th:field="${employee.id}"/>
+
+        <input type="text" th:field="${account.username}"
+               class="from-control mb-4 col-4" placeholder="username"/>
+
+        <br>
+
+        <input type="text" th:field="${employee.firstName}"
+               class="from-control mb-4 col-4" placeholder="First Name"/>
+
+        <br>
+
+        <input type="text" th:field="${employee.lastName}"
+               class="from-control mb-4 col-4" placeholder="Last Name"/>
+
+        <br>
+
+        <input type="password" th:field="${account.password}"
+               class="from-control mb-4 col-4" placeholder="Password"/>
+
+        <br>
+
+        <select th:field="${employee.employeeType}"
+               class="from-control mb-4 col-4">
+            <option value="QATester">QATester</option>
+            <option value="Developer">Developer</option>
+            <option value="Admin">Admin</option>
+        </select>
+
+        <br>
+
+        <button id="saveAccount" type="submit" class="btn btn-info col-2">Register</button>
+    </form>
+
+    <hr>
+    <a id="backLink" th:href="@{/bugreporting/employees/list}">Back to Employee List</a>
+</div>
+</body>
+</html>

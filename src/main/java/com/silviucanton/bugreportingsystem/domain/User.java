@@ -1,9 +1,8 @@
 package com.silviucanton.bugreportingsystem.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.Cascade;
+
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -18,7 +17,10 @@ public class User {
     private String password;
 
     @Column(name="enabled")
-    private boolean enabled;
+    private int enabled;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    private Authority authority;
 
     @Override
     public boolean equals(Object o) {
@@ -51,12 +53,20 @@ public class User {
         this.password = password;
     }
 
-    public boolean isEnabled() {
+    public int isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(int enabled) {
         this.enabled = enabled;
+    }
+
+    public Authority getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(Authority authority) {
+        this.authority = authority;
     }
 
     @Override

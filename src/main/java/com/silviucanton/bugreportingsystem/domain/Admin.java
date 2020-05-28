@@ -1,30 +1,30 @@
 package com.silviucanton.bugreportingsystem.domain;
 
-import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "QATESTER")
-public class QATester extends Employee{
-    public QATester(String username, String firstName, String lastName, User account) {
+@DiscriminatorValue(value = "ADMIN")
+public class Admin extends Employee {
+
+    public Admin(String username, String firstName, String lastName, User account) {
         super(username, firstName, lastName, account);
     }
 
-    public QATester() {
+    public Admin() {
     }
 
     @Override
     public String toString() {
-        return "QATester{}";
+        return "Admin{}";
     }
 
-    public QATester(Employee employee) {
+    public Admin(Employee employee) {
         super();
         this.setAccount(employee.getAccount());
         this.setFirstName(employee.getFirstName());
         this.setId(employee.getId());
         this.setLastName(employee.getLastName());
-        this.setEmployeeType("QATester");
+        this.setEmployeeType("Admin");
     }
 }
